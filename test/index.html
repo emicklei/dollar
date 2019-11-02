@@ -1,0 +1,47 @@
+<html>
+<body>
+<H1>Dollar Test</h1>
+<canvas id="board" width="400px" height="400px" style="border:solid 1px red">
+</canvas>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script>	
+	var board = document.getElementById("board")
+	var rect = board.getBoundingClientRect();
+	var points = [];
+	var state = "up";
+	function down(e) {
+		state = "down";
+		points = [];
+		var x = e.x - rect.left;
+		var y = e.y - rect.top;		
+		console.log("down",x, y);
+		points.push([x,y])
+	}
+	function move(e) {
+		if ("down" == state) {
+			var x = e.x - rect.left;
+			var y = e.y - rect.top;
+			console.log("move",x,y);
+			points.push([x,y])
+		}
+	}	
+	function up(e) {
+		state = "up";
+		var x = e.x - rect.left;
+		var y = e.y - rect.top;	
+		points.push([x,y])	
+		console.log("up",x, y);
+		console.log("points",points);
+		
+		$.ajax({
+		  type: "POST",
+		  url: "/recognize",
+		  data: JSON.stringify(points)
+		});
+	}		
+	board.onmousedown = down
+	board.onmousemove = move
+	board.onmouseup = up	
+</script>
+</body>
+</html>
